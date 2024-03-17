@@ -22,6 +22,10 @@ The version you're about to play is commonly enjoyed by children in Uganda and a
 5. **Game Ends:** The game ends when one player's side of small pits is empty.
 6. **Winning:** The player with the most stones in their big pit wins.
 
+HOW TO PLAY
+
+[https://youtu.be/-A-djjimCcM?si=8GNo5SA1QB_TqvGP](url)
+
 
 # Pseudo Code
 
