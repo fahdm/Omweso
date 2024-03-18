@@ -1,76 +1,61 @@
-* {
-    box-sizing: border-box;
-}
-
-body,
-html {
-    width: 100%;
+body, html {
     height: 100%;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-}
-
-/* Game Board Container */
-.game-container {
+    justify-content: center;
+    align-items: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #F5DEB3; 
+  }
+  
+  #playerDisplay {
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+  
+  #gameBoard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .row {
     display: flex;
     justify-content: center;
-    align-items: center;
-    flex: 1;
-
-}
-
-/* Game Board */
-.game-board {
-    display: grid;
-    grid-template-columns: repeat(6, 100px);
-    grid-template-rows: repeat(2, 100px);
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-
-}
-
-/* Cells */
-.cell {
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
-    margin: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-}
-
-/* Score Bins - positioned as sidebars */
-.pot1,
-#pot2 {
-    position: fixed;
-    top: 50%;
-    width: 50px;
+  }
+  
+  .pit {
+    background-color: #8B4513;
+    width: 100px;
     height: 100px;
-    border: 1px solid black;
-    display: flex;
-    margin: 40px;
-}
-
-.pot1 {
-    left: 0;
-}
-
-#pot2 {
-    right: 0;
-}
-
-.player-input {
+    margin: 10px;
+    border-radius: 50%; 
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
-    width: 100%;
-    padding: 20px;
-    background-color: #f2f2f2;
-    /* Light grey background */
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-    /* Soft shadow */
-}
+    justify-content: center;
+    position: relative;
+  }
+  
+  .box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5); 
+    width: 80px;
+    height: 80px;
+  }
+  
+  .rocks {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background-color: crimson;
+    margin: 2px;
+    border-radius: 50%;
+  }
+  
