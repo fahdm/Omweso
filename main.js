@@ -14,7 +14,7 @@ const PLAYER_2_MOVEMENT_MAP = {
     7: 6, 6: 5, 5: 4, 4: 3, 3: 2, 2: 8
 };
 
-/*----- Game's state (variables) -----*/
+/*----- app's state (variables) -----*/
 let gameBoard = {};
 let currentPlayerIndex = 0;
 let unmovablePit = null;
@@ -110,7 +110,7 @@ function moveRocks(startIndex) {
     let currentIndex = startIndex;
 
 
-    
+
     function distributeRocks() {
         if (rocks === 0) {
 
@@ -160,7 +160,7 @@ function checkWinCondition() {
 
     // Using the current Game State check for winner
 
-    let winner = determineWinner(); 
+    let winner = determineWinner();
     if (winner !== null) { // If a winner has been determined or it's a tie
         alert(`${winner} wins! Final scores - Player 1: ${gameBoard['score1']}, Player 2: ${gameBoard['score2']}`);
         resetGame();
@@ -188,7 +188,7 @@ function checkIfGameEnds() {
         }
     }
 
- 
+
     return !player1CanMove || !player2CanMove;
 }
 
