@@ -14,7 +14,7 @@ const PLAYER_2_MOVEMENT_MAP = {
     7: 6, 6: 5, 5: 4, 4: 3, 3: 2, 2: 8
 };
 
-/*----- app's state (variables) -----*/
+/*----- Game's state (variables) -----*/
 let gameBoard = {};
 let currentPlayerIndex = 0;
 let unmovablePit = null;
@@ -280,4 +280,3 @@ function updateScoreDisplays() {
     document.getElementById('player1Score').textContent = `Score: ${gameBoard['score1']}`;
     document.getElementById('player2Score').textContent = `Score: ${gameBoard['score2']}`;
 }
-
