@@ -6,63 +6,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Omweso</title>
     <link rel="stylesheet" href="main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Gamified Font -->
     <script defer src="main.js"></script>
 </head>
 
 <body>
     <main>
-        <div id="playerDisplay"> Player 1's Turn</div>
-        <section id="gameBoard">
 
-            <div class="row">
-                <!--Player 1's Pits-->
-                <div class='pit' data-value ='1'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='2'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='3'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='4'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='5'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='6'>
-                    <div class='box' draggable='true'></div>
-                </div>
+        <div id="playerDisplay">Player 1's Turn</div>
 
-            </div>
-            <!--Player 2's Pits-->
-
-            <div class="row">
-                <!--Player 1's Pits-->
-                <div class='pit' data-value = '7'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='8'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='9'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='10'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='11'>
-                    <div class='box' draggable='true'></div>
-                </div>
-                <div class='pit' data-value ='12'>
-                    <div class='box' draggable='true'></div>
-                </div>
-
+        <div id="count">
+            <div class='count-pit' id='player1-pit'>
+                <div class='box'></div>
+                <p id="player1Score">Score: 0</p>
             </div>
 
 
-        </section>
+
+
+            <section id="gameBoard">
+                <div class="row1">
+                    <!-- Player 1's Pits -->
+                    <div class='score1' data-value='1'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='2'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='3'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='4'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='5'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='6'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='7'>
+                        <div class='box'></div>
+                    </div>
+                </div>
+                <div class="row2">
+                    <!-- Player 2's Pits -->
+                    <div class='pit' data-value='8'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='9'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='10'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='11'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='12'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='pit' data-value='13'>
+                        <div class='box'></div>
+                    </div>
+                    <div class='score2' data-value='14'>
+                        <div class='box'></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class='count-pit' id='player2-pit'>
+                <div class='box'></div>
+                <p id="player2Score">Score: 0</p>
+            </div>
+        </div>
+        <button id="resetGame">Reset Game</button>
     </main>
 </body>
 
