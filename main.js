@@ -1,12 +1,26 @@
-/*----- constants -----*/
-const sound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-small-hit-in-a-game-2072.mp3");
-const players = ["Player 1", "Player 2"];
+/*----------Constants---------------- */
 
-/*------State VariabLe----- */
+const SOUND_EFFECT = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-small-hit-in-a-game-2072.mp3");
+const PLAYERS = ["Player 1", "Player 2"];
 
+
+const PLAYER_1_MOVEMENT_MAP = {
+    7: 6, 6: 5, 5: 4, 4: 3, 3: 2, 2: 1, 1: 8,
+    8: 9, 9: 10, 10: 11, 11: 12, 12: 13, 13: 7
+};
+
+const PLAYER_2_MOVEMENT_MAP = {
+    8: 9, 9: 10, 10: 11, 11: 12, 12: 13, 13: 14, 14: 7,
+    7: 6, 6: 5, 5: 4, 4: 3, 3: 2, 2: 8
+};
+
+/*----- app's state (variables) -----*/
 let gameBoard = {};
-let count = { 'player1': 0, 'player2': 0 };
 let currentPlayerIndex = 0;
+let unmovablePit = null;
+let turnCounter = 0;
+
+
 
 /*----- cached element references -----*/
 
@@ -18,8 +32,8 @@ const countDisplays = {
 };
 
 /*----- event listeners -----*/
-
 document.addEventListener('DOMContentLoaded', init);
+
 
 /*----- functions -----*/
 
@@ -29,58 +43,181 @@ function init() {
     document.querySelector("#resetGame").addEventListener('click', resetGame);
 }
 
+function resetGame() {
+    for (let i = 1; i <= 13; i++) {
+        gameBoard[i] = 3;
+    }
+    gameBoard['score1'] = 0;
+    gameBoard['score2'] = 0;
+    currentPlayerIndex = 0;
+    turnCounter = 0; // Reset turn counter
+    unmovablePit = Math.floor(Math.random() * 11) + 2; // Randomly chooses between pits 2-12
+    render();
+    updateGameStatus();
+
+}
+
+
+function render() {
+    playerDisplay.textContent = `${PLAYERS[currentPlayerIndex]}'s Turn`;
+
+    pits.forEach(pit => {
+        const index = parseInt(pit.getAttribute('data-value'));
+
+        // Update the visual state of the pit to indicate if it's movable or unmovable
+        if (index === unmovablePit) {
+            pit.classList.add("unmovable");
+            pit.classList.remove("movable");
+        } else {
+            pit.classList.add("movable");
+            pit.classList.remove("unmovable");
+        }
+
+        // Clear the current visual representation of rocks
+        const box = pit.querySelector('.box');
+        box.innerHTML = '';
+
+        // Add the visual representation of rocks based on the gameBoard state
+        for (let i = 0; i < (gameBoard[index] || 0); i++) {
+            box.appendChild(createRocks());
+        }
+    });
+
+    // Ensure the score displays and pits are updated to reflect the current game state
+    updateScoreDisplays();
+    updateScorePits();
+}
+
+
+
+
 function handleBoardClick(event) {
     const pit = event.target.closest('.pit');
     if (!pit) return;
 
     const pitIndex = parseInt(pit.getAttribute('data-value'));
-    const rocksInPit = gameBoard[pitIndex];
-
-    if (rocksInPit < 2) { // Check if there are 2 or more rocks
+    if (gameBoard[pitIndex] < 2 || !isPitStartableForPlayer(pitIndex)) {
         console.log("You cannot move one rock by itself.");
-        return; // Exit without making a move
+        return;
     }
-
-    if (isPitStartableForPlayer(pitIndex)) {
-        moveRocks(pitIndex);
-    }
+    moveRocks(pitIndex);
 }
 
-function resetGame() {
-    // Reset the game state for each pit
-    for (let i = 1; i <= 13; i++) {
-        gameBoard[i] = 3; // Assign 3 rocks to each pit
-    }
-    // Reset scores
-    gameBoard['score1'] = 0;
-    gameBoard['score2'] = 0;
 
-    // Clear visual rocks from scoring pits
-    document.querySelector('.score1 .box').innerHTML = '';
-    document.querySelector('.score2 .box').innerHTML = '';
+function moveRocks(startIndex) {
+    let rocks = gameBoard[startIndex];
+    gameBoard[startIndex] = 0;
+    let currentIndex = startIndex;
 
-    // Reset current player index
-    currentPlayerIndex = 0;
+
     
-    // Re-render the game board
-    render();
+    function distributeRocks() {
+        if (rocks === 0) {
+
+
+            currentPlayerIndex = (currentPlayerIndex + 1) % 2; // Switch turns
+            checkWinCondition();
+            render();
+            return;
+        }
+
+        currentIndex = getNextPitIndex(currentIndex);
+        gameBoard[currentIndex] = (gameBoard[currentIndex] || 0) + 1;
+        rocks--;
+
+        // Handle scoring when rocks land in the scoring pits
+        if (currentIndex === 1) {
+            gameBoard['score1'] += 1;
+        } else if (currentIndex === 14) {
+            gameBoard['score2'] += 1;
+        }
+
+        if (rocks > 0) {
+            requestAnimationFrame(distributeRocks);
+        } else {
+            updateScoreDisplays();
+            currentPlayerIndex = (currentPlayerIndex + 1) % 2; // Switch turns after distribution ends
+            checkWinCondition();
+            render();
+        }
+    }
+
+    distributeRocks();
 }
 
-function render() {
-    playerDisplay.textContent = `${players[currentPlayerIndex]}'s Turn`;
-    pits.forEach(pit => {
-        const index = parseInt(pit.getAttribute('data-value'));
-        const box = pit.querySelector('.box');
-        box.innerHTML = '';
-        for (let i = 0; i < (gameBoard[index] || 0); i++) {
-            box.appendChild(createRocks());
+
+
+function isPitStartableForPlayer(pitIndex) {
+    // Check if the pit is the unmovable pit
+    if (pitIndex === unmovablePit) return false;
+
+    return (currentPlayerIndex === 0 && pitIndex >= 2 && pitIndex <= 7) ||
+        (currentPlayerIndex === 1 && pitIndex >= 8 && pitIndex <= 13);
+}
+
+
+function checkWinCondition() {
+
+    // Using the current Game State check for winner
+
+    let winner = determineWinner(); 
+    if (winner !== null) { // If a winner has been determined or it's a tie
+        alert(`${winner} wins! Final scores - Player 1: ${gameBoard['score1']}, Player 2: ${gameBoard['score2']}`);
+        resetGame();
+    }
+}
+
+
+function determineWinner() {
+    let gameEnds = checkIfGameEnds();
+    if (!gameEnds) return null; // Game does not end yet
+
+    // Game ends, determine the winner based on scores
+    if (gameBoard['score1'] > gameBoard['score2']) return 'Player 1';
+    if (gameBoard['score2'] > gameBoard['score1']) return 'Player 2';
+    return 'It\'s a tie!'; // Scores are equal
+}
+
+
+function checkIfGameEnds() {
+    let player1CanMove = false, player2CanMove = false;
+    for (let i = 2; i <= 13; i++) {
+        if (gameBoard[i] > 0 && i !== unmovablePit) { // If pit has rocks and is not unmovable
+            if (i <= 7 && gameBoard[i] > 1) player1CanMove = true;
+            else if (i >= 8 && gameBoard[i] > 1) player2CanMove = true;
         }
-    });
-    // Update score displays
+    }
+
+ 
+    return !player1CanMove || !player2CanMove;
+}
+
+
+
+
+function updateScoreDisplays() {
     document.getElementById('player1Score').textContent = `Score: ${gameBoard['score1']}`;
     document.getElementById('player2Score').textContent = `Score: ${gameBoard['score2']}`;
-    
 }
+
+
+function updateGameStatus() {
+    const statusElement = document.getElementById("gameStatus");
+    if (unmovablePit) {
+        statusElement.textContent = `Unmovable Pit: ${unmovablePit}`;
+    } else {
+        statusElement.textContent = "Unmovable Pit: None";
+    }
+}
+
+
+function playDropSound() {
+    SOUND_EFFECT.play();
+}
+
+
+// utility functions
+
 
 function createRocks() {
     const rock = document.createElement('span');
@@ -88,96 +225,46 @@ function createRocks() {
     return rock;
 }
 
-function moveRocks(startIndex) {
-    let rocks = gameBoard[startIndex];
-    gameBoard[startIndex] = 0; // Empty the selected pit immediately
-    let currentIndex = startIndex;
 
-    function distributeRocks() {
-        if (rocks === 0) {
-            if (gameBoard[currentIndex] > 1 && currentIndex !== 1 && currentIndex !== 14) {
-                // If the current pit has more than one rock (excluding scoring pits), pick them up and continue
-                rocks = gameBoard[currentIndex];
-                gameBoard[currentIndex] = 0; // Clear the pit
-                document.querySelector(`[data-value="${currentIndex}"] .box`).innerHTML = ''; // Clear the visual representation
-            } else {
-                currentPlayerIndex = (currentPlayerIndex + 1) % 2; // Switch turns
-                checkWinCondition();
-                render();
-                return;
-            }
-        }
-    
+function updateScorePits() {
+    const score1Box = document.querySelector('#player1-pit .box');
+    const score2Box = document.querySelector('#player2-pit .box');
 
-        // Determine next pit index based on the current player
-    currentIndex = currentPlayerIndex === 0 ? getNextPitIndexPlayer1(currentIndex) : getNextPitIndexPlayer2(currentIndex);
-    
+    // Clear previous rocks
+    score1Box.innerHTML = '';
+    score2Box.innerHTML = '';
 
-        // Check if the current pit is the player's scoring pit and visually add a rock
-        if (currentPlayerIndex === 0 && currentIndex === 1) {
-            gameBoard['score1'] += 1;
-            rocks--;
-            document.querySelector('.score1 .box').appendChild(createRocks()); // Visually add a rock to score1
-            playDropSound();
-        } else if (currentPlayerIndex === 1 && currentIndex === 14) {
-            gameBoard['score2'] += 1;
-            rocks--;
-            document.querySelector('.score2 .box').appendChild(createRocks()); // Visually add a rock to score2
-            playDropSound();
-        } else if (!isOpponentScorePit(currentIndex)) {
-            gameBoard[currentIndex] += 1;
-            rocks--;
-            if(currentIndex > 1 && currentIndex < 14) { // Ensure we only visually add rocks to pits, not score pits here
-                const pitBox = document.querySelector(`[data-value="${currentIndex}"] .box`);
-                pitBox.appendChild(createRocks());
-            }
-            playDropSound();
-        }
-    
-        if (rocks > 0) {
-            requestAnimationFrame(distributeRocks);
-        } else {
-            currentPlayerIndex = (currentPlayerIndex + 1) % 2; // Switch turns after distribution ends
-            checkWinCondition();
-            render();
-        }
+    // Add visual representation of rocks in score pits
+    for (let i = 0; i < gameBoard['score1']; i++) {
+        score1Box.appendChild(createRocks());
     }
-    
-    distributeRocks();
-}
-// Player 1 and Two Counter Clockwise movement.
-
-function getNextPitIndexPlayer1(currentIndex) {
-    if (currentIndex >= 7 && currentIndex < 2) { // Move through Player 1's pits
-        return currentIndex + 1;
-    } else if (currentIndex === 1) { // From Player 1's last pit, jump to Player 2's first pit
-        return 8;
-    } else if (currentIndex >= 8 && currentIndex < 14) { // Move through Player 2's pits
-        return currentIndex + 1;
-    } else { // Loop to Player 1's score pit or the first of Player 1's pits after scoring
-        return 1;
-    }
-}
-
-function getNextPitIndexPlayer2(currentIndex) {
-    if (currentIndex === 14) { // After scoring, jump to Player 1's last pit
-        return 7;
-    } else if (currentIndex > 8 && currentIndex <= 13) { // Move through Player 2's pits
-        return currentIndex + 1;
-    } else if (currentIndex === 8) { // After completing Player 2's side, jump to Player 1's side
-        return 2;
-    } else if (currentIndex > 1 && currentIndex <= 7) { // Skip through Player 1's pits directly to score
-        return 14;
-    } else { // This scenario accounts for when Player 2 starts at their scoring pit
-        return 8; // Ensures the game continues from Player 2's first pit
+    for (let i = 0; i < gameBoard['score2']; i++) {
+        score2Box.appendChild(createRocks());
     }
 }
 
 
-function isPitStartableForPlayer(pitIndex) {
-    return (currentPlayerIndex === 0 && pitIndex >= 2 && pitIndex <= 7) ||
-           (currentPlayerIndex === 1 && pitIndex >= 8 && pitIndex <= 13);
+
+function updateUnmovablePit() {
+    let newUnmovablePit;
+    do {
+        newUnmovablePit = Math.floor(Math.random() * 11) + 2;
+    } while (newUnmovablePit === unmovablePit);
+
+    unmovablePit = newUnmovablePit;
+
+
+    render();
+    updateGameStatus(); // Update game status with the new unmovable pit
+
 }
+
+
+function getNextPitIndex(currentIndex) {
+    return currentPlayerIndex === 0 ? PLAYER_1_MOVEMENT_MAP[currentIndex] : PLAYER_2_MOVEMENT_MAP[currentIndex];
+}
+
+
 
 function isOpponentScorePit(currentIndex) {
     if (currentPlayerIndex === 0 && currentIndex === 14) {
@@ -188,19 +275,9 @@ function isOpponentScorePit(currentIndex) {
     return false;
 }
 
-function checkWinCondition() {
-    const player1SideEmpty = [2, 3, 4, 5, 6, 7].every(i => gameBoard[i] === 0);
-    const player2SideEmpty = [8, 9, 10, 11, 12, 13].every(i => gameBoard[i] === 0);
 
-    if (player1SideEmpty || player2SideEmpty) {
-        const winner = gameBoard['score1'] > gameBoard['score2'] ? 'Player 1' : 'Player 2';
-        alert(`${winner} wins!`);
-        resetGame(); // Resets the game for a new round
-        }
-        }
-        
-        function playDropSound() {
-        sound.play();
-        }
+function updateScoreDisplays() {
+    document.getElementById('player1Score').textContent = `Score: ${gameBoard['score1']}`;
+    document.getElementById('player2Score').textContent = `Score: ${gameBoard['score2']}`;
+}
 
-        
