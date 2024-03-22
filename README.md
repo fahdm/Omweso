@@ -10,6 +10,13 @@ For generations, it has been an integral part of Ugandan culture, with royals an
 - **Unmovable Pit:** Randomly selected pit that changes each game, adding a layer of unpredictability and strategy.
 - **Reset Game Button:** Allows players to start a new game instantly.
 
+### On Render
+![Screenshot 2024-03-22 at 7 20 31 AM](https://github.com/fahdm/Omweso/assets/8414726/4031e633-a638-4321-942b-49e159d55b60)
+
+### Game Play
+![Screenshot 2024-03-22 at 7 21 32 AM](https://github.com/fahdm/Omweso/assets/8414726/f00fd607-2c40-4837-9326-755c54f90aab)
+![Screenshot 2024-03-22 at 7 22 01 AM](https://github.com/fahdm/Omweso/assets/8414726/af19b053-e88f-413d-9bc6-a1dc8b143985)
+
 ## Technology Stack
 
 - **HTML:** Structures the game's interface.
@@ -18,10 +25,8 @@ For generations, it has been an integral part of Ugandan culture, with royals an
 
 ## Setup
 
-To run the project locally:
+Click [Omweso](https://fahdm.github.io/Omweso/) to check out the game.
 
-1. Clone or download the project repository.
-2. Open the `index.html` file in a modern web browser.
 
 ## Game Rules
 
@@ -60,5 +65,15 @@ Game State Variables: Variables such as gameBoard, currentPlayerIndex, and unmov
 
 #### Event Listeners
 Initial setup and game interactions are managed through event listeners, primarily focused on game board clicks and the reset game button.
+
+### Next Steps
+
+Continuing the development of the Omweso game involves refining existing features and implementing new functionalities to enhance the overall gaming experience. 
+
+* User Interface Improvements: Enhance the game's visual appeal and user experience through more refined UI/UX design elements. This could include smoother animations for rock movements, more intuitive indicators for the current player's turn, and clearer score displays.
+  
+* Tutorials and Game Strategies: Introduce an interactive tutorial or guide section that teaches new players the rules of Omweso, offers strategic advice, and explains the significance of the unmovable pit. This education component can make the game more accessible to a wider audience.
+  
+* Mobile Compatibility: Ensure the game is fully responsive and playable on mobile devices. This might involve optimizing the layout for smaller screens and implementing touch controls to make gameplay seamless on smartphones and tablets.
 
 
