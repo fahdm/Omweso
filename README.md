@@ -1,4 +1,4 @@
-# Omweso Game 
+# Omweso an African Board Game
 Omweso is a dynamic, two-player strategy game inspired by a traditional Ugandan board game.🎲🇺🇬 
 For generations, it has been an integral part of Ugandan culture, with royals and kings often renowned as game masters. The game simulates a competition between two players who move rocks across pits on a board, aiming to collect more rocks than their opponent. The game incorporates simple yet engaging mechanics, including strategic movement, randomized unmovable pits, and a playful, gamified interface designed to provide an enjoyable experience for players of all ages. 👑🏆
 
